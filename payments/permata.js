@@ -46,6 +46,4 @@ const inquiry = async (vaNumber) => {
   }
 };
 
-// inquiry("497861087722171686").then(console.log);
-// payment("497861087722171686", 310000).then(console.log);
 module.exports = { payment, inquiry };
