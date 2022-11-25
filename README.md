@@ -1,6 +1,12 @@
 # Midtrans Sandbox
 this package will help you simulate payment in midtrans sandbox api.
 
+## How to install
+```bash
+npm install midtrans-sandbox
+```
+
+## How to use
 ```javascript
 const sandbox = require('midtrans-sandbox');
 
