@@ -1,0 +1,49 @@
+const cheerio = require("cheerio");
+const { _asyncRequest, _parseHtmlResult } = require("../utils/request");
+
+const payment = async (vaNumber, amount) => {
+  try {
+    const resp = await _asyncRequest({
+      endpoint: "/bni/va/payment",
+      form: {
+        va_number: vaNumber,
+        total_amount: amount,
+      },
+    });
+    const [err, res] = _parseHtmlResult(resp?.body || "");
+    if (err) throw new Error(err);
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const inquiry = async (vaNumber) => {
+  try {
+    const resp = await _asyncRequest({
+      endpoint: "/bni/va/inquiry",
+      form: {
+        va_number: vaNumber,
+      },
+    });
+    const html = resp?.body || "";
+    const $ = cheerio.load(html);
+    let amount =
+      $(
+        "#wrap > div.container > form > div:nth-child(2) > div > input[type=text]"
+      ).attr("value") || "0";
+    const account = $(
+      "#wrap > div.container > form > div:nth-child(3) > div > p"
+    ).text();
+    const description = $(
+      "#wrap > div.container > form > div:nth-child(4) > div > p"
+    ).text();
+    amount = parseInt(amount);
+    if (!account) throw new Error("Invalid VA Number");
+    return { amount, account, description };
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { payment, inquiry };
