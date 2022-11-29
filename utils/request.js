@@ -1,8 +1,6 @@
+const request = require("request");
 const cheerio = require("cheerio");
-const qs = require("qs");
-const axios = require("axios");
 const baseURL = "https://simulator.sandbox.midtrans.com";
-
 
 const _asyncRequest = async (options) => {
   options.url = baseURL + options.endpoint;
@@ -11,9 +9,13 @@ const _asyncRequest = async (options) => {
     "Content-Type": "application/x-www-form-urlencoded",
   };
 
-  return axios({
-    ...options,
-    data: qs.stringify(options.form),
+  return new Promise((res, rej) => {
+    request(options, (error, response) => {
+      if (error) {
+        rej(error);
+      }
+      res(response);
+    });
   });
 };
 
